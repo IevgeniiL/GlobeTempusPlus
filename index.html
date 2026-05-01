@@ -873,6 +873,99 @@
       .hero-text, .hero-phone { animation: none; opacity: 1; transform: none; }
       [data-animate] { opacity: 1 !important; transform: none !important; transition: none !important; }
     }
+
+    /* ── LIVE ANIMATIONS ── */
+
+    /* 1. Floating hero phone */
+    @keyframes phone-float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    .hero-phone img {
+      animation: phone-float 5.5s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* 2. Animated gradient on h1 accent */
+    h1 em {
+      background: linear-gradient(130deg, #FF7043 0%, #FF9800 30%, #FF5722 55%, #FF7043 100%);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-flow 5s linear infinite;
+    }
+    @keyframes gradient-flow {
+      0%   { background-position: 0% center; }
+      100% { background-position: -300% center; }
+    }
+
+    /* 3. Drifting background orbs */
+    @keyframes orb-a { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-22px,18px)} 66%{transform:translate(14px,-12px)} }
+    @keyframes orb-b { 0%,100%{transform:translate(0,0)} 40%{transform:translate(18px,-16px)} 70%{transform:translate(-14px,10px)} }
+    @keyframes orb-c { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-10px,-20px)} }
+    .hero-bg-orb--a { animation: orb-a 20s ease-in-out infinite; }
+    .hero-bg-orb--b { animation: orb-b 26s ease-in-out infinite; }
+    .hero-bg-orb--c { animation: orb-c 16s ease-in-out infinite; }
+
+    /* 4. Pulsing eyebrow dot */
+    @keyframes dot-pulse {
+      0%, 100% { transform: scale(1);   opacity: 1; }
+      50%       { transform: scale(1.8); opacity: 0.45; }
+    }
+    .eyebrow::before { animation: dot-pulse 2.6s ease-in-out infinite; }
+
+    /* 5. Nav scrolled state */
+    nav { transition: background 0.3s, box-shadow 0.3s; }
+    nav.nav--scrolled {
+      background: rgba(28, 28, 30, 0.97);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.07), 0 8px 32px rgba(0,0,0,0.55);
+    }
+
+    /* 6. App Store badge enhanced glow pulse */
+    @keyframes badge-glow-pulse {
+      0%, 100% { filter: drop-shadow(0 8px 22px rgba(255,87,34,0.18)); }
+      50%       { filter: drop-shadow(0 10px 36px rgba(255,87,34,0.48)) drop-shadow(0 0 20px rgba(255,140,0,0.22)); }
+    }
+    .hero-actions .app-store-badge {
+      animation: hero-app-badge-breathe 9s cubic-bezier(0.45,0.05,0.55,0.95) infinite,
+                 badge-glow-pulse 3.2s ease-in-out infinite;
+    }
+
+    /* 7. CTA double pulsing ring */
+    .cta-store-wrap { position: relative; display: inline-block; }
+    .cta-store-wrap::before,
+    .cta-store-wrap::after {
+      content: '';
+      position: absolute;
+      border-radius: 18px;
+      border: 1.5px solid rgba(255,87,34,0.35);
+      pointer-events: none;
+      animation: ring-pulse 2.6s ease-out infinite;
+    }
+    .cta-store-wrap::before { inset: -8px; }
+    .cta-store-wrap::after  { inset: -18px; border-color: rgba(255,87,34,0.15); animation-delay: 0.6s; }
+    @keyframes ring-pulse {
+      0%       { opacity: 1; transform: scale(1); }
+      70%,100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    /* 8. Count-up pop */
+    @keyframes num-pop {
+      from { opacity: 0; transform: scale(0.6) translateY(6px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .badge-num.is-counted { animation: num-pop 0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+    /* Reduced-motion overrides for live animations */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-phone img,
+      .hero-bg-orb--a, .hero-bg-orb--b, .hero-bg-orb--c,
+      .cta-store-wrap::before, .cta-store-wrap::after { animation: none !important; }
+      .eyebrow::before { animation: none !important; }
+      h1 em { animation: none !important; background-position: 0% center; }
+      .hero-actions .app-store-badge { animation: none !important; filter: none; }
+    }
   </style>
 </head>
 <body>
@@ -1299,6 +1392,48 @@
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   els.forEach(function (el) { io.observe(el); });
+})();
+
+// Nav scroll state
+(function () {
+  var nav = document.querySelector('nav');
+  if (!nav) return;
+  function update() { nav.classList.toggle('nav--scrolled', window.scrollY > 10); }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+
+// Count-up badge numbers
+(function () {
+  var nums = document.querySelectorAll('.badge-num');
+  if (!nums.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      io.unobserve(el);
+      var text = el.textContent.trim();
+      var m = text.match(/[\d.]+/);
+      if (!m) { el.classList.add('is-counted'); return; }
+      var target = parseFloat(m[0]);
+      var pre = text.slice(0, m.index);
+      var suf = text.slice(m.index + m[0].length);
+      var isFloat = m[0].indexOf('.') !== -1;
+      var dur = 900, t0 = null;
+      function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var e = 1 - Math.pow(1 - p, 3);
+        var v = target * e;
+        el.textContent = pre + (isFloat ? v.toFixed(1) : Math.round(v)) + suf;
+        if (p < 1) requestAnimationFrame(step);
+        else { el.textContent = text; el.classList.add('is-counted'); }
+      }
+      requestAnimationFrame(step);
+    });
+  }, { threshold: 0.6 });
+  nums.forEach(function (el) { io.observe(el); });
 })();
 </script>
 

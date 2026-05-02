@@ -40,6 +40,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
       background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
@@ -108,9 +110,9 @@
     .container { max-width: 1120px; margin: 0 auto; padding: 0 var(--section-pad-x); }
     .eyebrow {
       display: inline-flex; align-items: center; gap: 7px;
-      font-size: 12px; font-weight: 700; letter-spacing: 1.4px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--accent);
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .eyebrow::before {
       content: '';
@@ -125,17 +127,22 @@
     }
     h1 {
       font-size: clamp(48px, 6.5vw, 80px);
-      font-weight: 800; line-height: 1.02;
-      letter-spacing: -3px;
+      font-weight: 800; line-height: 1.01;
+      letter-spacing: -0.04em;
     }
     h2 {
-      font-size: clamp(36px, 4.5vw, 58px);
-      font-weight: 800; line-height: 1.06;
-      letter-spacing: -2px;
+      font-size: clamp(34px, 4.5vw, 56px);
+      font-weight: 800; line-height: 1.04;
+      letter-spacing: -0.03em;
+    }
+    h3 {
+      font-size: 19px; font-weight: 700;
+      line-height: 1.25; letter-spacing: -0.02em;
+      margin-bottom: 10px;
     }
     .accent { color: var(--accent); }
     .lead {
-      font-size: 18px; line-height: 1.7;
+      font-size: 18px; line-height: 1.65;
       color: var(--muted); max-width: 460px;
     }
     .divider {
@@ -445,7 +452,7 @@
     .screen-cap {
       font-size: 13px; font-weight: 600;
       color: var(--muted); text-align: center;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.02em;
     }
 
     /* ── FEATURE ROWS ── */
@@ -527,11 +534,11 @@
     }
     .feat-icon svg { width: 22px; height: 22px; }
     .feat-card h3 {
-      font-size: 17px; font-weight: 700; letter-spacing: -0.3px;
+      font-size: 17px;
       margin-bottom: 8px;
     }
     .feat-card p {
-      font-size: 14px; line-height: 1.65;
+      font-size: 15px; line-height: 1.6;
       color: var(--muted);
     }
 
@@ -555,11 +562,7 @@
       font-size: 20px; font-weight: 800; color: var(--accent);
       margin-bottom: 22px;
     }
-    .step h3 {
-      font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
-      margin-bottom: 10px;
-    }
-    .step p { font-size: 15px; line-height: 1.65; color: var(--muted); }
+    .step p { font-size: 15px; line-height: 1.6; color: var(--muted); }
 
     /* ── CTA ── */
     .cta-section {
@@ -581,9 +584,9 @@
       display: flex; flex-direction: column; align-items: center; gap: 4px;
     }
     .badge-num {
-      font-size: 28px; font-weight: 800; letter-spacing: -1px;
+      font-size: 34px; font-weight: 800; letter-spacing: -0.03em;
     }
-    .badge-label { font-size: 13px; color: var(--muted); }
+    .badge-label { font-size: 14px; color: var(--muted); letter-spacing: 0.01em; }
     .cta-store-wrap {
       display: flex; justify-content: center; gap: 16px;
       flex-wrap: wrap; margin-top: 48px;
